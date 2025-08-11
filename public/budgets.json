@@ -1,0 +1,26 @@
+[
+        {
+            "category": "Entertainment",
+            "maximum": 50.00,
+            "theme": "#277C78",
+            "depence": 15.00
+        },
+        {
+            "category": "Bills",
+            "maximum": 750.00,
+            "theme": "#82C9D7",
+            "depence" :150.00
+        },
+        {
+            "category": "Dining Out",
+            "maximum": 75.00,
+            "theme": "#F2CDAC",
+            "depence": 133.00
+        },
+        {
+            "category": "Personal Care",
+            "maximum": 100.00,
+            "theme": "#626070",
+            "depence": 40.00
+        }
+]
