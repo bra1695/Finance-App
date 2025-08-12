@@ -8,9 +8,44 @@ import { Eye, EyeOff } from "lucide-react"
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false)
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError("")
+    setLoading(true)
+
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.message || "Something went wrong")
+      } else {
+        // Redirect to login or dashboard
+        window.location.href = "/login"
+      }
+    } catch (err) {
+      setError("Server error, please try again later")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
-    <div className="w-full max-w-md mx-auto p-6 bg-white rounded-2xl shadow">
+    <form
+      onSubmit={handleRegister}
+      className="w-full max-w-md mx-auto p-6 bg-white rounded-2xl shadow"
+    >
       <h1 className="text-2xl font-bold mb-6">Sign Up</h1>
 
       {/* Name */}
@@ -21,6 +56,9 @@ export default function RegisterForm() {
           id="name"
           placeholder="Your name"
           className="mt-1"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
         />
       </div>
 
@@ -32,6 +70,9 @@ export default function RegisterForm() {
           id="email"
           placeholder="you@example.com"
           className="mt-1"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
         />
       </div>
 
@@ -44,6 +85,9 @@ export default function RegisterForm() {
             id="password"
             placeholder="••••••••"
             className="pr-10"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
           <button
             type="button"
@@ -64,9 +108,18 @@ export default function RegisterForm() {
         Passwords must be at least 8 characters
       </p>
 
+      {/* Error message */}
+      {error && (
+        <p className="mb-4 text-red-500 text-sm text-center">{error}</p>
+      )}
+
       {/* Create Account Button */}
-      <Button className="w-full bg-black text-white hover:bg-gray-800">
-        Create Account
+      <Button
+        type="submit"
+        className="w-full bg-black text-white hover:bg-gray-800"
+        disabled={loading}
+      >
+        {loading ? "Creating..." : "Create Account"}
       </Button>
 
       {/* Footer link */}
@@ -76,6 +129,6 @@ export default function RegisterForm() {
           Login
         </a>
       </p>
-    </div>
+    </form>
   )
 }

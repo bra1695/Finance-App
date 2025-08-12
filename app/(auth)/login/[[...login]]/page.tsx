@@ -5,10 +5,34 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import { Eye, EyeOff } from "lucide-react"
-export default function login(){
-    const [showPassword, setShowPassword] = useState(false)
+
+export default function Login() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    })
+
+    if (res.ok) {
+      window.location.href = "/dashboard"
+    } else {
+      const data = await res.json()
+      alert(data.error || "Login failed")
+    }
+  }
+
   return (
-    <div className="w-full max-w-md mx-auto p-6 bg-white rounded-2xl shadow">
+    <form
+      onSubmit={handleLogin}
+      className="w-full max-w-md mx-auto p-6 bg-white rounded-2xl shadow"
+    >
       <h1 className="text-2xl font-bold mb-6">Login</h1>
 
       {/* Email */}
@@ -19,6 +43,9 @@ export default function login(){
           id="email"
           placeholder="you@example.com"
           className="mt-1"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
         />
       </div>
 
@@ -31,6 +58,9 @@ export default function login(){
             id="password"
             placeholder="••••••••"
             className="pr-10"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
           <button
             type="button"
@@ -47,7 +77,7 @@ export default function login(){
       </div>
 
       {/* Login Button */}
-      <Button className="w-full bg-black text-white hover:bg-gray-800">
+      <Button type="submit" className="w-full bg-black text-white hover:bg-gray-800">
         Login
       </Button>
 
@@ -58,6 +88,6 @@ export default function login(){
           Sign Up
         </a>
       </p>
-    </div>
+    </form>
   )
 }
